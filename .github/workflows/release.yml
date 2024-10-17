@@ -1,0 +1,38 @@
+# Déclenche le workflow sur les pushs vers les branches 'main' et 'beta'
+name: Release
+on:
+  push:
+    branches:
+      - main
+      - beta
+
+# Définir les permissions nécessaires pour ce workflow
+permissions:
+  contents: write
+  # accès à d'autres permissions via crtl+espace pour voir les possibilités
+
+jobs:
+  # Job pour obtenir la version
+  get-version:
+    # Utilise (importe) un workflow externe pour obtenir la version
+    # github-actions est un repo communautaire
+    uses: shiipou/github-actions/.github/workflows/get-version.yml@main
+    with: # paramètres à rajouter au workflow générique récupéré
+      release-branches: '^(main)$'
+      prerelease-branches: '^(beta)$'
+
+  # Job pour construire le projet Spring
+  build-front:
+    # les names sont les noms visibles dans la release Github
+    name: React build
+    runs-on: ubuntu-latest # utilise un runner linux (possible aussi Mac, Windows)
+    # Condition pour exécuter ce job seulement si une release est détectée
+    if: ${{ needs.get-version.outputs.will-release == 'true' }}
+    needs:
+      - get-version # à besoin que le Job get-version soit fini pour commencer le build
+    steps:
+      # Étape pour vérifier le code source
+      - uses: actions/checkout@v4
+      # Installer Node
+      - name: Setup Node.js environment
+        uses: actions//setup-node@v4.0.4
