@@ -2,6 +2,7 @@ package fr.initiativedeuxsevres.trouve_ton_match.entity;
 
 import fr.initiativedeuxsevres.trouve_ton_match.enums.TypeUtilisateur;
 import jakarta.persistence.Column;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;

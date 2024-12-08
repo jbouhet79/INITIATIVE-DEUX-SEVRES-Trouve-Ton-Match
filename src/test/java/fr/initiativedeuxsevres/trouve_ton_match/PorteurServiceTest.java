@@ -32,6 +32,7 @@ public class PorteurServiceTest {
 
         String dateLancement = "2024-11-06";
         String domaine = "TP";
+        String descriptifActivite = "activité";
         String besoins = "comptabilité";
         String lieuActivite = "NIORT";
         String disponibilites = "lundi";
@@ -46,6 +47,7 @@ public class PorteurServiceTest {
         Porteur mockPorteur = Porteur.builder()
                 .dateLancement(dateLancement)
                 .domaine(domaine)
+                .descriptifActivite(descriptifActivite)
                 .besoins(besoins)
                 .lieuActivite(lieuActivite)
                 .disponibilites(disponibilites)
@@ -60,12 +62,14 @@ public class PorteurServiceTest {
                 idUtilisateur,
                 dateLancement,
                 domaine,
+                descriptifActivite,
                 besoins,
                 lieuActivite,
                 disponibilites);
 
         assertEquals(dateLancement, porteurTest.getDateLancement());
         assertEquals(domaine, porteurTest.getDomaine());
+        assertEquals(descriptifActivite, porteurTest.getDescriptifActivite());
         assertEquals(besoins, porteurTest.getBesoins());
         assertEquals(lieuActivite, porteurTest.getLieuActivite());
         assertEquals(disponibilites, porteurTest.getDisponibilites());

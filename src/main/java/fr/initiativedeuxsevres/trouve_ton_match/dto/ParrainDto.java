@@ -70,6 +70,7 @@ public class ParrainDto extends UtilisateurDto {
         this.entrepriseUtilisateur = utilisateurDto.getEntrepriseUtilisateur();
         this.plateformeUtilisateur = utilisateurDto.getPlateformeUtilisateur();
         this.codeUtilisateur = utilisateurDto.getCodeUtilisateur();
+        this.typeUtilisateur = "parrain";
 
     }
 
@@ -81,6 +82,7 @@ public class ParrainDto extends UtilisateurDto {
         this.entrepriseUtilisateur = parrain.getEntrepriseUtilisateur();
         this.plateformeUtilisateur = parrain.getPlateformeUtilisateur();
         this.codeUtilisateur = parrain.getCodeUtilisateur();
+        this.typeUtilisateur = "parrain";
         this.presentationParcours = parrain.getPresentationParcours();
         this.branchesReseau = parrain.getBranchesReseau();
         this.domainesExpertise = parrain.getDomainesExpertise();

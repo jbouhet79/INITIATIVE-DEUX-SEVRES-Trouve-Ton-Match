@@ -1,8 +1,12 @@
 package fr.initiativedeuxsevres.trouve_ton_match.mapper;
 
 import fr.initiativedeuxsevres.trouve_ton_match.dto.ParrainDto;
+import fr.initiativedeuxsevres.trouve_ton_match.dto.SecteurReseauDto;
+import fr.initiativedeuxsevres.trouve_ton_match.dto.TypeAccompagnementDto;
 import fr.initiativedeuxsevres.trouve_ton_match.entity.Parrain;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class ParrainMapper {
@@ -19,7 +23,7 @@ public class ParrainMapper {
      * @param parrain L'entité Parrain à convertir.
      * @return Un DTO ParrainDto.
      */
-    public ParrainDto toDto(Parrain parrain) {
+    public static ParrainDto toDto(Parrain parrain) {
         if (parrain == null) {
             return null;
         }
@@ -34,6 +38,7 @@ public class ParrainMapper {
         parrainDto.setEntrepriseUtilisateur(parrain.getEntrepriseUtilisateur());
         parrainDto.setPlateformeUtilisateur(parrain.getPlateformeUtilisateur());
         parrainDto.setCodeUtilisateur(parrain.getCodeUtilisateur());
+        System.out.println("Passage dans ParrainMapper toDto - nom: " + parrainDto.getNomUtilisateur());
 
         // Mapper les propriétés spécifiques à Parrain
         parrainDto.setPresentationParcours(parrain.getPresentationParcours());
@@ -50,24 +55,17 @@ public class ParrainMapper {
      * @param parrainDto Le DTO à convertir.
      * @return Une entité Parrain.
      */
-    public Parrain toEntity(ParrainDto parrainDto) {
+    public Parrain toEntity(ParrainDto parrainDto, Parrain parrainExistant, List<TypeAccompagnementDto> accompagnements, List<SecteurReseauDto> secteursReseaux) {
         if (parrainDto == null) {
             return null;
         }
 
         // Convertir le DTO en entité
-        Parrain parrain = new Parrain();
+        Parrain parrain = parrainExistant != null ? parrainExistant : new Parrain();
 
         // Mapper les propriétés héritées de la classe Utilisateur
-        parrain.setIdUtilisateur(parrainDto.getIdUtilisateur());
-        parrain.setNomUtilisateur(parrainDto.getNomUtilisateur());
-        parrain.setPrenomUtilisateur(parrainDto.getPrenomUtilisateur());
-        parrain.setEntrepriseUtilisateur(parrainDto.getEntrepriseUtilisateur());
-        parrain.setPlateformeUtilisateur(parrainDto.getPlateformeUtilisateur());
-        parrain.setCodeUtilisateur(parrainDto.getCodeUtilisateur());
-        parrain.setTypeUtilisateur(parrainDto.getTypeUtilisateur());
-        System.out.println("Type d'utilisateur dans ParrainMapper toEntity: " + parrainDto.getTypeUtilisateur());
-        System.out.println("Type d'utilisateur dans ParrainMapper toEntity parrain.getType(): " + parrain.getTypeUtilisateur());
+        // pas nécessaire : cause d'erreur
+
 
         // Mapper les propriétés spécifiques à Parrain
         parrain.setPresentationParcours(parrainDto.getPresentationParcours());

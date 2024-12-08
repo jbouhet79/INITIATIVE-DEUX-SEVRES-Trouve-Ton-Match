@@ -1,9 +1,14 @@
 package fr.initiativedeuxsevres.trouve_ton_match.mapper;
 
+import fr.initiativedeuxsevres.trouve_ton_match.dto.SecteurReseauDto;
 import fr.initiativedeuxsevres.trouve_ton_match.dto.TypeAccompagnementDto;
+import fr.initiativedeuxsevres.trouve_ton_match.dto.UtilisateurDto;
 import fr.initiativedeuxsevres.trouve_ton_match.entity.TypeAccompagnement;
+import fr.initiativedeuxsevres.trouve_ton_match.entity.Utilisateur;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -27,14 +32,25 @@ public class TypeAccompagnementMapper {
             return null;
         }
 
+        // Version courte
+//        return new TypeAccompagnementDto(
+//                entity.getId(),
+//                entity.getLabel(),
+//                null
+//        );
+
+        // Version détaillée
+        List<UtilisateurDto> utilisateursDto = new ArrayList<>();
+        if (entity.getUtilisateurs() != null) {
+            for (Utilisateur utilisateur : entity.getUtilisateurs()) {
+                utilisateursDto.add(utilisateurMapper.toDto(utilisateur));
+            }
+        }
+
         return new TypeAccompagnementDto(
                 entity.getId(),
                 entity.getLabel(),
-                entity.getUtilisateurs() != null
-                        ? entity.getUtilisateurs().stream()
-                        .map(utilisateurMapper::toDto) // Utilisation du mapper injecté
-                        .collect(Collectors.toList())
-                        : null
+                utilisateursDto
         );
     }
 

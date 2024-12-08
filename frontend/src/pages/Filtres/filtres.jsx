@@ -28,11 +28,11 @@ const Filtres = () => {
 
   // Avant recupération des secteurs en bbd - suppression de l'initialisation de l'objet
   // const [secteurReseau, setSecteurReseau] = useState({
-    // secteur1: false,
-    // secteur2: false,
-    // secteur3: false,
-    // secteur4: false,
-    // secteur5: false,
+  // secteur1: false,
+  // secteur2: false,
+  // secteur3: false,
+  // secteur4: false,
+  // secteur5: false,
   // })
 
   // Après recupération des secteurs en bbd - initialisation de l'array
@@ -41,7 +41,7 @@ const Filtres = () => {
 
   // récupération des secteurs en bdd en utlisant l'API Fetch
   useEffect(() => {
-    fetch('http://localhost:8080/secteurReseau/listeSecteurReseau?timestamp=' + new Date().getTime())
+    fetch('http://localhost:8080/secteurReseau/listeSecteurReseau')
       .then(response => response.json())
       .then(data => {
         setSecteurs(data);
@@ -66,10 +66,11 @@ const Filtres = () => {
 
   // récupération des types d'accompagnement en bdd en utlisant l'API Fetch
   useEffect(() => {
-    fetch('http://localhost:8080/accompagnement/listeAccompagnement?timestamp=' + new Date().getTime())
+    fetch('http://localhost:8080/accompagnement/listeAccompagnement')
       .then(response => response.json())
       .then(data => {
         setTypesAccompagnement(data);
+        console.log('listeAccompagnement:', data);
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des secteurs:', error);
@@ -279,7 +280,7 @@ export default Filtres;
     onChange={handleChange}
   />
 </label><br /> */}
-{/* </form> */}
+{/* </form> */ }
 
 
 

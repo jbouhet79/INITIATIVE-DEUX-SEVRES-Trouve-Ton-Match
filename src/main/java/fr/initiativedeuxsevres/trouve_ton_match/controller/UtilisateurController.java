@@ -1,11 +1,10 @@
 package fr.initiativedeuxsevres.trouve_ton_match.controller;
 
 import fr.initiativedeuxsevres.trouve_ton_match.dto.*;
-import fr.initiativedeuxsevres.trouve_ton_match.entity.Parrain;
-import fr.initiativedeuxsevres.trouve_ton_match.entity.TypeAccompagnement;
-import fr.initiativedeuxsevres.trouve_ton_match.entity.SecteurReseau;
-import fr.initiativedeuxsevres.trouve_ton_match.entity.Utilisateur;
+import fr.initiativedeuxsevres.trouve_ton_match.entity.*;
 import fr.initiativedeuxsevres.trouve_ton_match.mapper.UtilisateurMapper;
+import fr.initiativedeuxsevres.trouve_ton_match.mapper.ParrainMapper;
+import fr.initiativedeuxsevres.trouve_ton_match.mapper.PorteurMapper;
 import fr.initiativedeuxsevres.trouve_ton_match.service.ParrainService;
 import fr.initiativedeuxsevres.trouve_ton_match.service.PorteurService;
 import fr.initiativedeuxsevres.trouve_ton_match.service.TypeAccompagnementService;
@@ -21,6 +20,8 @@ import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,7 +38,12 @@ public class UtilisateurController {
 
     private final SecteurReseauService secteurReseauService;
 
-    private final UtilisateurMapper utilisateurMapper;
+//    private final UtilisateurMapper utilisateurMapper;
+
+//    private final ParrainMapper parrainMapper;
+
+//    private final PorteurMapper porteurMapper;
+
 
     // @Autowired
     // public UtilisateurController(ParrainService parrainService, PorteurService
@@ -56,11 +62,11 @@ public class UtilisateurController {
 //        Utilisateur utilisateur = utilisateurService.save(utilisateurDto);
 
         // avec Mapper
-        List<TypeAccompagnementDto> accompagnements = typeAccompagnementService.findAll(); // Récupérer ou créer la liste
-        List<SecteurReseauDto> secteursReseaux = secteurReseauService.findAll(); // Récupérer ou créer la liste
+//        List<TypeAccompagnementDto> accompagnements = typeAccompagnementService.findAll(); // Récupérer ou créer la liste
+//        List<SecteurReseauDto> secteursReseaux = secteurReseauService.findAll(); // Récupérer ou créer la liste
 
-        Utilisateur utilisateur = utilisateurMapper.toEntity(utilisateurDto, accompagnements, secteursReseaux);
-        utilisateur = utilisateurService.save(utilisateur);
+//        Utilisateur utilisateur = utilisateurMapper.toEntity(utilisateurDto, accompagnements, secteursReseaux);
+        Utilisateur utilisateur = utilisateurService.save(utilisateurDto);
         System.out.println("utilisateur dans le controlleur: " + utilisateur);
 
         return ResponseEntity.ok(utilisateur);
@@ -96,48 +102,116 @@ public class UtilisateurController {
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PostMapping(value = "/completercompteparrain", produces = MediaType.APPLICATION_JSON_VALUE)
+//    @PostMapping(value = "/completercompteparrain", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Parrain> completercompteparrain(@RequestBody ParrainDto parrainDto) {
+//
+//        System.out.println("Données reçues : " + parrainDto);
+//
+//        Parrain parrain = parrainService.findById(parrainDto.getIdUtilisateur());
+//
+//        // Vérifier si le parrain existe dans la base
+//        if (parrain == null) {
+//            // Si le parrain n'existe pas, retourner un objet Parrain vide
+//            Parrain emptyParrain = new Parrain();
+//            emptyParrain.setIdUtilisateur(parrainDto.getIdUtilisateur());
+//            System.out.println("Parrain introuvable, renvoi d'un objet vide.");
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(emptyParrain);
+//        }
+//
+//        System.out.println("Compte complété");
+//        System.out.println("id :" + parrainDto.getIdUtilisateur());
+//
+//        // Mise à jour des données
+//        parrain.setPresentationParcours(parrainDto.getPresentationParcours());
+//        parrain.setBranchesReseau(parrainDto.getBranchesReseau());
+//        parrain.setDomainesExpertise(parrainDto.getDomainesExpertise());
+//        parrain.setSecteurGeographique(parrainDto.getSecteurGeographique());
+//        parrain.setDisponibilites(parrainDto.getDisponibilites());
+//
+//        Parrain updatedParrainEntity = parrainMapper.toEntity(parrainDto);  // Utiliser un Mapper pour convertir le DTO en entité
+//        Parrain updatedParrain = parrainService.save(updatedParrainEntity);  // Sauvegarder l'entité dans la base
+//
+//
+////        Parrain updatedParrain = parrainService.save(parrain);
+//        return ResponseEntity.ok(updatedParrain);
+//    }
+
+    @PostMapping (value = "/completercompteparrain", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Parrain> completercompteparrain(@RequestBody ParrainDto parrainDto) {
 
-        System.out.println("Données reçues : " + parrainDto);
+//        System.out.println("Données reçues : " + parrainDto);
+//
+//        // Récupérer le parrain existant par son ID
+//        Parrain parrainExistant = parrainService.findById(parrainDto.getIdUtilisateur());
+//        System.out.println("Récupérer le parrain existant par son ID dans /completercompteparrain : " + parrainDto);
+//        System.out.println("Récupérer le NOM du parrain existant par son ID dans /completercompteparrain : " + parrainDto.getNomUtilisateur());
+//
+//        // Vérifier si le parrain existe dans la base
+//        if (parrainExistant == null) {
+//            // Si le parrain n'existe pas, retourner un objet Parrain vide
+//            Parrain emptyParrain = new Parrain();
+//            emptyParrain.setIdUtilisateur(parrainDto.getIdUtilisateur());
+//            System.out.println("Parrain introuvable, renvoi d'un objet vide.");
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(emptyParrain);
+//        }
+//
+//        // Récupérer la liste des Accompagnements et Secteurs
+//        List<TypeAccompagnementDto> accompagnements = typeAccompagnementService.findAll();
+//        List<SecteurReseauDto> secteursReseaux = secteurReseauService.findAll();
+//
+//        // Mapper le DTO en entité, en incluant les accompagnements et secteurs
+//        Parrain updatedParrainEntity =  parrainMapper.toEntity(parrainDto, parrainExistant, accompagnements, secteursReseaux);
+//        System.out.println("Entité mise à jour après le mapping : " + updatedParrainEntity);
+//        System.out.println("parrainDto dans Mapper le DTO en entité: " + parrainDto);
+//        System.out.println("updatedParrainEntity via Mapper le DTO en entité: " + updatedParrainEntity);
 
-        Parrain parrain = parrainService.findById(parrainDto.getIdUtilisateur());
+        // Sauvegarder l'entité
+        Parrain updatedParrain = parrainService.save(parrainDto);
 
-        // Vérifier si le parrain existe dans la base
-        if (parrain == null) {
-            // Si le parrain n'existe pas, retourner un objet Parrain vide
-            Parrain emptyParrain = new Parrain();
-            emptyParrain.setIdUtilisateur(parrainDto.getIdUtilisateur());
-            System.out.println("Parrain introuvable, renvoi d'un objet vide.");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(emptyParrain);
-        }
-
-        System.out.println("Compte complété");
-        System.out.println("id :" + parrainDto.getIdUtilisateur());
-
-        // Mise à jour des données
-        parrain.setPresentationParcours(parrainDto.getPresentationParcours());
-        parrain.setBranchesReseau(parrainDto.getBranchesReseau());
-        parrain.setDomainesExpertise(parrainDto.getDomainesExpertise());
-        parrain.setSecteurGeographique(parrainDto.getSecteurGeographique());
-        parrain.setDisponibilites(parrainDto.getDisponibilites());
-
-        Parrain updatedParrain = parrainService.save(parrain);
+        // Retourner la réponse avec l'entité mise à jour
         return ResponseEntity.ok(updatedParrain);
+    }
 
-        // try {
-        // Parrain updatedParrain = parrainService.save(parrain);
-        // return ResponseEntity.ok(updatedParrain);
-        // } catch (Exception e) {
-        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        // .body("Erreur lors de la sauvegarde : " + e.getMessage());
-        // }
+    @PostMapping(value = "/completercompteporteur", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Porteur> completercompteporteur(@RequestBody PorteurDto porteurDto) {
+
+//        System.out.println("Données reçues : " + porteurDto);
+//
+//        Porteur porteurExistant = porteurService.findById(porteurDto.getIdUtilisateur());
+//
+//        // Vérifier si le porteur existe dans la base
+//        if (porteurExistant == null) {
+//            // Si le porteur n'existe pas, retourner un objet Porteur vide
+//            Porteur emptyPorteur = new Porteur();
+//            emptyPorteur.setIdUtilisateur(porteurDto.getIdUtilisateur());
+//            System.out.println("Porteur introuvable, renvoi d'un objet vide.");
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(emptyPorteur);
+//        }
+//
+//        System.out.println("Compte complété");
+//        System.out.println("id :" + porteurDto.getIdUtilisateur());
+//
+//        // Récupérer la liste des Accompagnements et Secteurs
+//        List<TypeAccompagnementDto> accompagnements = typeAccompagnementService.findAll();
+//        List<SecteurReseauDto> secteursReseaux = secteurReseauService.findAll();
+//
+//        // Mapper le DTO en entité, en incluant les accompagnements et secteurs
+//        Porteur updatedPorteurEntity =  porteurMapper.toEntity(porteurDto, porteurExistant, accompagnements, secteursReseaux);
+//        System.out.println("Entité mise à jour après le mapping : " + updatedPorteurEntity);
+//        System.out.println("parrainDto dans Mapper le DTO en entité: " + porteurDto);
+//        System.out.println("updatedParrainEntity via Mapper le DTO en entité: " + updatedPorteurEntity);
+
+        // Sauvegarder l'entité
+        Porteur updatedPorteur = porteurService.save(porteurDto);
+
+        // Retourner la réponse avec l'entité mise à jour
+        return ResponseEntity.ok(updatedPorteur);
     }
 
     @PostMapping(value = "/accompagnementutilisateur", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Utilisateur> accompagnementUtilisateur(@RequestBody UtilisateurDto utilisateurDto) {
         List<TypeAccompagnement> accompagnementTypeList = typeAccompagnementService
-                .findAllById(utilisateurDto.getAccompagnementTypeList());
+                .findAllById(utilisateurDto.getAccompagnementTypeList().stream().map(dto -> dto.getId()).collect(Collectors.toList()));
 
         Utilisateur utilisateur = utilisateurService.findByCodeUtilisateur(utilisateurDto.getCodeUtilisateur());
         utilisateur.setAccompagnementTypeList(accompagnementTypeList);
@@ -150,7 +224,7 @@ public class UtilisateurController {
     @PostMapping(value = "/secteursreseauxutilisateur", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Utilisateur> secteurReseauUtilisateur(@RequestBody UtilisateurDto utilisateurDto) {
         List<SecteurReseau> secteurReseauList = secteurReseauService
-                .findAllById(utilisateurDto.getSecteurReseauList());
+                .findAllById(utilisateurDto.getSecteurReseauList().stream().map(dto -> dto.getId()).collect(Collectors.toList()));
 
         Utilisateur utilisateur = utilisateurService.findByCodeUtilisateur(utilisateurDto.getCodeUtilisateur());
         utilisateur.setSecteurReseauList(secteurReseauList);
@@ -161,9 +235,9 @@ public class UtilisateurController {
     }
 
     @PostMapping(value = "/filtres", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Utilisateur> selectionFiltres(@RequestBody UtilisateurDto utilisateurDto) {
+    public ResponseEntity<UtilisateurDto> selectionFiltres(@RequestBody UtilisateurDto utilisateurDto) {
         try {
-            Utilisateur savedUtilisateur = utilisateurService.selectionFiltres(utilisateurDto);
+            UtilisateurDto savedUtilisateur = utilisateurService.selectionFiltres(utilisateurDto);
             return ResponseEntity.ok(savedUtilisateur);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
@@ -173,8 +247,8 @@ public class UtilisateurController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Utilisateur> getUtilisateurById(@PathVariable Long id) {
-        Utilisateur utilisateur = utilisateurService.findById(id);
+    public ResponseEntity<UtilisateurDto> getUtilisateurById(@PathVariable Long id) {
+        UtilisateurDto utilisateur = utilisateurService.findById(id);
         return ResponseEntity.ok(utilisateur);
     }
 

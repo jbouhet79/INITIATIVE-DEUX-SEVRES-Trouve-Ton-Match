@@ -1,9 +1,14 @@
 package fr.initiativedeuxsevres.trouve_ton_match.mapper;
 
 import fr.initiativedeuxsevres.trouve_ton_match.dto.PorteurDto;
+import fr.initiativedeuxsevres.trouve_ton_match.dto.SecteurReseauDto;
+import fr.initiativedeuxsevres.trouve_ton_match.dto.TypeAccompagnementDto;
+import fr.initiativedeuxsevres.trouve_ton_match.entity.Parrain;
 import fr.initiativedeuxsevres.trouve_ton_match.entity.Porteur;
 import fr.initiativedeuxsevres.trouve_ton_match.mapper.UtilisateurMapper;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class PorteurMapper {
@@ -46,29 +51,27 @@ public class PorteurMapper {
     /**
      * Convertit un DTO PorteurDto en entité Porteur.
      *
-     * @param dto Le DTO PorteurDto à convertir.
+     * @param porteurDto Le DTO PorteurDto à convertir.
      * @return L'entité Porteur.
      */
-    public Porteur toEntity(PorteurDto dto) {
-        if (dto == null) {
+    public Porteur toEntity(PorteurDto porteurDto, Porteur porteurExistant, List<TypeAccompagnementDto> accompagnements, List<SecteurReseauDto> secteursReseaux) {
+        if (porteurDto == null) {
             return null;
         }
 
-        // Création de l'entité Porteur
-        Porteur entity = new Porteur();
-        entity.setIdUtilisateur(dto.getIdUtilisateur());
-        entity.setNomUtilisateur(dto.getNomUtilisateur());
-        entity.setPrenomUtilisateur(dto.getPrenomUtilisateur());
-        entity.setEntrepriseUtilisateur(dto.getEntrepriseUtilisateur());
-        entity.setPlateformeUtilisateur(dto.getPlateformeUtilisateur());
-        entity.setCodeUtilisateur(dto.getCodeUtilisateur());
-        entity.setTypeUtilisateur(dto.getTypeUtilisateur());
-        entity.setDateLancement(dto.getDateLancement());
-        entity.setDomaine(dto.getDomaine());
-        entity.setBesoins(dto.getBesoins());
-        entity.setLieuActivite(dto.getLieuActivite());
-        entity.setDisponibilites(dto.getDisponibilites());
+        // Convertir le DTO en entité
+        Porteur porteur = porteurExistant != null ? porteurExistant : new Porteur();
 
-        return entity;
+        // Mapper les propriétés héritées de la classe Utilisateur
+        // pas nécessaire : cause d'erreur
+
+        // Mapper les propriétés spécifiques à Parrain
+        porteur.setDateLancement(porteurDto.getDateLancement());
+        porteur.setDomaine(porteurDto.getDomaine());
+        porteur.setBesoins(porteurDto.getBesoins());
+        porteur.setLieuActivite(porteurDto.getLieuActivite());
+        porteur.setDisponibilites(porteurDto.getDisponibilites());
+
+        return porteur;
     }
 }
