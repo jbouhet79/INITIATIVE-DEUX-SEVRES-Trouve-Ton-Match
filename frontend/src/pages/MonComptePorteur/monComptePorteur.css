@@ -1,0 +1,121 @@
+.form-label {
+    background-color: #e7ffcc;
+    padding: 5px 50px 5px 10px;
+    margin-bottom: 0px;
+    border-radius: 5px;
+}
+
+.form-label-type {
+    background-color: #e7ffcc;
+    padding: 5px 50px 5px 10px;
+    margin-bottom: 0px;
+    border-radius: 5px;
+    width: 250px;
+}
+
+.titre{
+    margin-top: 15px;
+    max-height: 50px;
+}
+
+.custom-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.custom-container .custom-input {
+    background-color: rgb(255, 255, 255, 0.8);
+    color: black ;
+    border: none ;
+}
+
+/* .custom-container .custom-id {
+    background-color: rgb(255, 255, 255, 1);
+    color: black ;
+    border: none ;
+
+} */
+
+.text {
+    color: white;
+    font-size: xx-large;
+    background-color: #FF165D;
+    padding: 5px 40px 10px 40px;
+    border-radius: 10px;
+    margin: 0;
+}
+
+.error {
+    color: #FF165D;
+    font-size: 0.875em;
+    margin-top: 0.25em;
+}
+
+.bouton-envoyer {
+    display: flex;
+    align-items: center;
+    color: white;
+    border: none;
+    background-color: #FF165D;
+    padding: 4px 15px 6px 20px;
+    border-radius: 10px;
+    font-size: medium;
+}
+
+.img-send {
+    padding-right: 0px;
+    padding-left: 10px;
+    height: 15px;
+}
+
+.position-bouton {
+    display: flex;
+    justify-content: end;
+}
+
+.radio-label {
+    margin-right: 20px;
+}
+
+.radio-input {
+    margin-right: 10px; /* Ajoute un espace entre le bouton et le texte */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+
+    border: 2px solid #000000;
+    transition: 0.2s all linear;
+    margin-right: 5px;
+
+    position: relative;
+    top: 4px;
+}
+  
+input:checked {
+border: 6px solid black;
+}
+
+button,
+legend {
+color: white;
+background-color: black;
+padding: 5px 10px;
+border-radius: 0;
+border: 0;
+font-size: 14px;
+}
+
+button:hover,
+button:focus {
+color: #999;
+}
+
+button:active {
+background-color: white;
+color: black;
+outline: 1px solid black;
+}

@@ -21,6 +21,7 @@ public class TypeAccompagnementController {
     @GetMapping(value = "/listeAccompagnement", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TypeAccompagnementDto>> getTypesAccompagnement() {
         List<TypeAccompagnementDto> typeAccompagnement = typeAccompagnementService.findAll();
+        System.out.println("typeAccompagnementService.findAll(): " + typeAccompagnement);
         return ResponseEntity.ok(typeAccompagnement);
     }
 

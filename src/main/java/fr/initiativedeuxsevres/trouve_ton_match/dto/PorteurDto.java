@@ -18,6 +18,7 @@ public class PorteurDto extends UtilisateurDto {
      */
     private String dateLancement;
     private String domaine;
+    private String descriptifActivite;
     private String besoins;
     private String lieuActivite;
     private String disponibilites;
@@ -32,6 +33,7 @@ public class PorteurDto extends UtilisateurDto {
      * @param codeUtilisateur
      * @param dateLancement
      * @param domaine
+     * @param descriptifActivite
      * @param besoins
      * @param lieuActivite
      * @param disponibilites
@@ -39,7 +41,7 @@ public class PorteurDto extends UtilisateurDto {
     public PorteurDto(Long idUtilisateur, String nomUtilisateur, String prenomUtilisateur,
                             String entrepriseUtilisateur,
                             String plateformeUtilisateur, String codeUtilisateur, String typeUtilisateur, String dateLancement,
-                            String domaine, String besoins, String lieuActivite, String disponibilites) {
+                            String domaine, String descriptifActivite, String besoins, String lieuActivite, String disponibilites) {
 
         // propriétés de la classe mère
         this.idUtilisateur = idUtilisateur;
@@ -53,6 +55,7 @@ public class PorteurDto extends UtilisateurDto {
         // propriétés de la classe fille
         this.dateLancement = dateLancement;
         this.domaine = domaine;
+        this.descriptifActivite = descriptifActivite;
         this.besoins = besoins;
         this.lieuActivite = lieuActivite;
         this.disponibilites = disponibilites;
@@ -84,6 +87,7 @@ public class PorteurDto extends UtilisateurDto {
         this.codeUtilisateur = porteur.getCodeUtilisateur();
         this.dateLancement = porteur.getDateLancement();
         this.domaine = porteur.getDomaine();
+        this.descriptifActivite = getDescriptifActivite();
         this.besoins = porteur.getBesoins();
         this.lieuActivite = porteur.getLieuActivite();
         this.disponibilites = porteur.getDisponibilites();
