@@ -1,5 +1,5 @@
 import Wrapper from '../../Wrapper/index'
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { ChampSaisie } from '../CreationCompte/champSaisie';
 import '../CreationCompte/creationCompte.css';
 import './connexion.css';
@@ -14,6 +14,8 @@ const codeRegex = /^[a-zA-ZÀ-ÿ\- ]{1}\d{3}$/; // code admis :  1 lettre suivie
 
 const Connexion = () => {
 
+    const nomUtilisateurRef = useRef(null);
+
     const [utilisateurDto, setUtilisateurDto] = useState({
         // idUtilisateur:'',
         nomUtilisateur: '',
@@ -25,6 +27,11 @@ const Connexion = () => {
     const [userNotFound, setUserNotFound] = useState(false);
     const navigate = useNavigate();
     const { login } = useAuth();
+
+    // Focaliser sur le champ "nomUtilisateur"
+    if (nomUtilisateurRef.current) {
+        nomUtilisateurRef.current.focus();
+    }
 
     const validate = () => {
         const newErrors = {};
@@ -132,6 +139,7 @@ const Connexion = () => {
 
                 {errors.prenomUtilisateur && <div className="error">{errors.nomUtilisateur}</div>}
                 <ChampSaisie
+                    ref={nomUtilisateurRef}
                     setValue={(value) => handleChange('nomUtilisateur', value)}
                     label="Nom :"
                     name="nomUtilisateur"

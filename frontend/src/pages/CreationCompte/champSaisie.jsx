@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, forwardRef } from "react";
 import './creationCompte.css';
 
-export function ChampSaisie({setValue, label, name, value, regex}) {
+export const ChampSaisie = forwardRef(({setValue, label, name, value, regex}, ref) => {
 
     const [errMsg, setErrMsg] = useState([{}]);
 
@@ -9,11 +9,16 @@ export function ChampSaisie({setValue, label, name, value, regex}) {
     const [focusInput, setFocusInput] = useState(false);
 
 
-    const inputRef = useRef();
-
+    // const inputRef = useRef();
     useEffect(() => {
-        inputRef.current.focus()
-    }, [])
+        if (ref && ref.current) {
+          ref.current.focus();
+        }
+      }, [ref]);
+
+    // useEffect(() => {
+    //     inputRef.current.focus()
+    // }, [])
 
      useEffect(() => {
            const result = regex.test(value);
@@ -38,7 +43,7 @@ export function ChampSaisie({setValue, label, name, value, regex}) {
                     <div className="custom-container">
                         
                         <input 
-                            ref={inputRef}
+                            ref={ref}
                             onChange={handleChange}
                             value={value}
                             name={name}
@@ -64,4 +69,5 @@ export function ChampSaisie({setValue, label, name, value, regex}) {
                 </div>
               </div>
     )
-}
+});
+

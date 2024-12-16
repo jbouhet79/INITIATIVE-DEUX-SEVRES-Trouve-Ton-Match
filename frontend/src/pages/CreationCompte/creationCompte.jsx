@@ -1,5 +1,5 @@
 import Wrapper from '../../Wrapper/index'
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useLocation } from 'react-router-dom';
 import { ChampSaisie } from './champSaisie';
 import './creationCompte.css';
@@ -11,6 +11,8 @@ const nomRegex = /^[A-ZÀ-ÿ\- ]{2,}$/; // NOM en MAJUSCULES
 const codeRegex = /^[a-zA-ZÀ-ÿ\- ]{1}\d{3}$/; // code admis :  1 lettre suivie de 3 chiffres
 
 const CreationCompte = () => {
+
+    const nomUtilisateurRef = useRef(null);
 
 
     // Initialisation des états des valeurs de utilisateurDto
@@ -41,6 +43,12 @@ const CreationCompte = () => {
         });
 
         setIsSubmitted(false);
+
+        // Focaliser sur le champ "nomUtilisateur"
+        if (nomUtilisateurRef.current) {
+            nomUtilisateurRef.current.focus();
+        }
+
     }, [location]); // A chaque fois que l’URL change (info connue grâce à l'objet location), le useEffect est déclenché pour réinitialiser la page.
 
     const [errors, setErrors] = useState({});
@@ -137,6 +145,7 @@ const CreationCompte = () => {
 
                 {errors.nomUtilisateur && <div className="error">{errors.nomUtilisateur}</div>}
                 <ChampSaisie
+                    ref={nomUtilisateurRef}
                     setValue={(value) => handleChange('nomUtilisateur', value)}
                     label="Nom :"
                     name="nomUtilisateur"

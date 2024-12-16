@@ -1,23 +1,35 @@
 package fr.initiativedeuxsevres.trouve_ton_match.service;
 
 import fr.initiativedeuxsevres.trouve_ton_match.dto.ParrainDto;
+import fr.initiativedeuxsevres.trouve_ton_match.dto.SecteurReseauDto;
+import fr.initiativedeuxsevres.trouve_ton_match.dto.TypeAccompagnementDto;
 import fr.initiativedeuxsevres.trouve_ton_match.dto.UtilisateurDto;
 import fr.initiativedeuxsevres.trouve_ton_match.entity.Parrain;
 import fr.initiativedeuxsevres.trouve_ton_match.entity.Porteur;
 import fr.initiativedeuxsevres.trouve_ton_match.entity.Utilisateur;
 import fr.initiativedeuxsevres.trouve_ton_match.mapper.ParrainMapper;
+import fr.initiativedeuxsevres.trouve_ton_match.mapper.TypeAccompagnementMapper;
 import fr.initiativedeuxsevres.trouve_ton_match.repository.ParrainRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ParrainService {
+
+    private final TypeAccompagnementService typeAccompagnementService;
+    private final SecteurReseauService secteurReseauService;
+//    private final ParrainService parrainService;
+
+    private final ParrainMapper parrainMapper;
 
     @Autowired
     private ParrainRepository parrainRepository;
@@ -76,6 +88,7 @@ public class ParrainService {
         // Récupérer le parrain par son ID
         Parrain parrain = parrainRepository.findById(idUtilisateur)
                 .orElseThrow(() -> new RuntimeException("Parrain non trouvé"));
+        System.out.println("Parrain récupéré dans completerCompteParrain: " + parrain);
 
         // Mettre à jour les champs du parrain
         parrain.setPresentationParcours(presentationParcours);
@@ -95,6 +108,30 @@ public class ParrainService {
 
     public Parrain save(Parrain parrain) {
         System.out.println("Sauvegarde en cours pour : " + parrain);
+        System.out.println("Sauvegarde en cours (nom) : " + parrain.getNomUtilisateur());
         return parrainRepository.save(parrain);
+    }
+
+    public Parrain save(ParrainDto parrainDto) {
+
+        Parrain parrainExistant = findById(parrainDto.getIdUtilisateur());
+        System.out.println("Récupérer le parrain existant par son ID dans /completercompteparrain : " + parrainDto);
+        System.out.println("Récupérer le NOM du parrain existant par son ID dans /completercompteparrain : " + parrainDto.getNomUtilisateur());
+
+        // Vérifier si le parrain existe dans la base
+        if (parrainExistant == null) {
+            // Si le parrain n'existe pas, retourner un objet Parrain vide
+            Parrain emptyParrain = new Parrain();
+            emptyParrain.setIdUtilisateur(parrainDto.getIdUtilisateur());
+            System.out.println("Parrain introuvable, renvoi d'un objet vide.");
+            return emptyParrain;
+        }
+
+        List<TypeAccompagnementDto> accompagnements = typeAccompagnementService.findAll();
+        List<SecteurReseauDto> secteursReseaux = secteurReseauService.findAll();
+        Parrain updatedParrainEntity =  parrainMapper.toEntity(parrainDto, parrainExistant, accompagnements, secteursReseaux);
+        System.out.println("Sauvegarde en cours pour : " + updatedParrainEntity);
+        System.out.println("Sauvegarde en cours (nom) : " + updatedParrainEntity.getNomUtilisateur());
+        return parrainRepository.save(updatedParrainEntity);
     }
 }

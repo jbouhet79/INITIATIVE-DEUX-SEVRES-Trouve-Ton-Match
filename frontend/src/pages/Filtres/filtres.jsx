@@ -16,34 +16,36 @@ const Filtres = () => {
   //  Initialisation des états des valeurs de utilisateurDto
   const [utilisateurDto, setUtilisateurDto] = useState({
     idUtilisateur: '',
-    accompagnementTypeList: [],
     secteurReseauList: [],
+    accompagnementTypeList: [],
   });
 
+  
+  const [secteurs, setSecteurs] = useState([]); // Liste des secteurs récupérés de la BDD
+  const [secteurReseau, setSecteurReseau] = useState([]); // Liste des secteurs sélectionnés
+  const [typesAccompagnement, setTypesAccompagnement] = useState([]); // Liste des types d'accompagnement récupérés
+  const [accompagnements, setAccompagnements] = useState([]); // Liste des types sélectionnés
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const location = useLocation(); // Ce hook permet d’accéder à l’objet location qui représente l’URL actuelle de l’application 
 
+  const location = useLocation(); // Ce hook permet d’accéder à l’objet location qui représente l’URL actuelle de l’application 
   const idUtilisateur = localStorage.getItem('idUtilisateur');
   console.log('recupération de idUtilisateur - page - filtres :', idUtilisateur);
 
   // Avant recupération des secteurs en bbd - suppression de l'initialisation de l'objet
   // const [secteurReseau, setSecteurReseau] = useState({
-    // secteur1: false,
-    // secteur2: false,
-    // secteur3: false,
-    // secteur4: false,
-    // secteur5: false,
+  // secteur1: false,
+  // secteur2: false,
+  // secteur3: false,
+  // secteur4: false,
+  // secteur5: false,
   // })
 
-  // Après recupération des secteurs en bbd - initialisation de l'array
-  const [secteurs, setSecteurs] = useState([]);
-  const [secteurReseau, setSecteurReseau] = useState([]);
-
-  // récupération des secteurs en bdd en utlisant l'API Fetch
+  // récupération des secteurs depuis la bdd en utlisant l'API Fetch
   useEffect(() => {
-    fetch('http://localhost:8080/secteurReseau/listeSecteurReseau?timestamp=' + new Date().getTime())
+    fetch('http://localhost:8080/secteurReseau/listeSecteurReseau')
       .then(response => response.json())
       .then(data => {
+        console.log("ListeSecteurReseau -> Secteurs:", data)
         setSecteurs(data);
       })
       .catch(error => {
@@ -60,16 +62,13 @@ const Filtres = () => {
   //   typeAccompagnement5: false,
   // })
 
-  // Après recupération des secteurs en bbd - initialisation de l'array
-  const [typesAccompagnement, setTypesAccompagnement] = useState([]);
-  const [accompagnements, setAccompagnements] = useState([]);
-
-  // récupération des types d'accompagnement en bdd en utlisant l'API Fetch
+  // récupération des types d'accompagnement depuis la bdd en utlisant l'API Fetch
   useEffect(() => {
-    fetch('http://localhost:8080/accompagnement/listeAccompagnement?timestamp=' + new Date().getTime())
+    fetch('http://localhost:8080/accompagnement/listeAccompagnement')
       .then(response => response.json())
       .then(data => {
         setTypesAccompagnement(data);
+        console.log('listeAccompagnement -> TypesAccompagnement:', data);
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des secteurs:', error);
@@ -77,89 +76,213 @@ const Filtres = () => {
   }, []);
 
 
+  // Initialisation de l'objet utilisateurDto
   useEffect(() => {
     setUtilisateurDto({
       idUtilisateur: idUtilisateur,
-      accompagnementTypeList: [],
-      secteurReseauList: []
+      secteurReseauList: [],
+      accompagnementTypeList: []
     })
   }, [location, idUtilisateur]);
 
-  const handleChange = (event) => {
+  // const handleChange = (event) => {
 
-    const { name, checked } = event.target;
+  //   const { name, checked } = event.target;
 
-    // Différencier les cases cochées
-    if (name.startsWith("typeAccompagnement")) {
-      setAccompagnements((prevState) => ({
-        ...prevState,
-        [name]: checked,
-      }));
-    } else if (name.startsWith("secteur")) {
-      setSecteurReseau(prevState => ({
-        ...prevState,
-        [name]: checked
-      }));
+  //   // Différencier les cases cochées
+  //   if (name.startsWith("secteur")) {
+  //     setSecteurReseau((prevState) => ({
+  //       ...prevState,
+  //       [name]: checked,
+  //     }));
+  //   } else if (name.startsWith("typeAccompagnement")) {
+  //     setAccompagnements((prevState) => ({
+  //       ...prevState,
+  //       [name]: checked
+  //     }));
+  //   }
+
+  //   setUtilisateurDto((prevState) => ({
+  //     ...prevState,
+  //     [name]: checked,
+  //   }));
+
+  //================================ début version modifiée=====================
+
+  const handleChange = (event, item, isSecteur) => {
+    const { checked } = event.target;
+  
+    if (isSecteur) {
+      // Gestion des secteurs
+      setSecteurReseau((prevState) => {
+        if (checked) {
+          // Ajoutez l'objet secteur
+          return [...prevState, { id: item.id, label: item.label }];
+        } else {
+          // Retirez l'objet secteur
+          return prevState.filter((secteur) => secteur.id !== item.id);
+        }
+      });
+    } else {
+      // Gestion des types d'accompagnement
+      setAccompagnements((prevState) => {
+        if (checked) {
+          // Ajoutez l'objet accompagnement
+          return [...prevState, { id: item.id, label: item.label }];
+        } else {
+          // Retirez l'objet accompagnement
+          return prevState.filter((type) => type.id !== item.id);
+        }
+      });
     }
 
-    setUtilisateurDto((prevState) => ({
-      ...prevState,
-      [name]: checked,
-    }));
+  };
 
-    console.log("utilisateurDto :", utilisateurDto);
-  }
 
+  // const handleChange = (event, item, isSecteur) => {
+  //   const { checked } = event.target;
+  
+  //   if (isSecteur) {
+  //     // Gestion des secteurs
+  //     setSecteurReseau((prevState) => {
+  //       const updatedSecteurs = checked
+  //         ? [...prevState, { id: item.id, label: item.label }]
+  //         : prevState.filter((secteur) => secteur.id !== item.id);
+  
+  //       // Mettez à jour utilisateurDto avec les secteurs modifiés
+  //       setUtilisateurDto((prevDto) => ({
+  //         ...prevDto,
+  //         secteurReseauList: updatedSecteurs,
+  //       }));
+  
+  //       return updatedSecteurs;
+  //     });
+  //   } else {
+  //     // Gestion des types d'accompagnement
+  //     setAccompagnements((prevState) => {
+  //       const updatedAccompagnements = checked
+  //         ? [...prevState, { id: item.id, label: item.label }]
+  //         : prevState.filter((type) => type.id !== item.id);
+  
+  //       // Mettez à jour utilisateurDto avec les types d'accompagnement modifiés
+  //       setUtilisateurDto((prevDto) => ({
+  //         ...prevDto,
+  //         accompagnementTypeList: updatedAccompagnements,
+  //       }));
+  
+  //       return updatedAccompagnements;
+  //     });
+  //   }
+  // };
+  
+
+    // Si nécessaire, mettez à jour utilisateurDto =============================== Retiré dans la nouvelle version
+    // setUtilisateurDto((prevState) => ({
+    //   ...prevState,
+    //   secteurReseauList: checked
+    //     ? [...prevState.secteurReseauList, { id: secteur.id, label: secteur.label }]
+    //     : prevState.secteurReseauList.filter((item) => item.id !== secteur.id),
+    //   accompagnementTypeList: checked
+    //     ? [...prevState.accompagnementTypeList, { id: accompagnements.id, label: accompagnements.label }]
+    //     : prevState.accompagnementTypeList.filter((item) => item.id !== accompagnements.id),
+    // }));
+    // console.log("setUtilisateurDto:", utilisateurDto)
+
+    // ================== fin version modifiée =========================
+
+
+
+  //   console.log("utilisateurDto :", utilisateurDto);
+  // }
+
+
+  // ancienne version ==========================================================
+
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   console.log("Formulaire soumis"); // Formulaire soumis
+
+  //   // Convertir les objets en tableaux de valeurs cochées
+  //   const secteurReseauList = Object.keys(secteurReseau)
+  //     .filter(option => secteurReseau[option])
+  //     .map(option => parseInt(option.replace('secteur', ''))); // Convertir en numéros d'ID;
+
+
+  //   const accompagnementTypeList = Object.keys(accompagnements)
+  //     .filter(option => accompagnements[option])
+  //     .map(option => parseInt(option.replace('typeAccompagnement', ''))); // Convertir en numéros d'ID;
+
+
+  //   // Mettre à jour utilisateurDto avec les valeurs sélectionnées
+  //   setUtilisateurDto((prevUtilisateurDto) => {
+  //     const utilisateurDto = {
+  //       ...prevUtilisateurDto, // Utiliser l'état précédent pour garantir que l'on travaille avec la version la plus récente
+  //       secteurReseauList,
+  //       accompagnementTypeList,
+  //     };
+
+  //     console.log("UtilisateurDto à envoyer :", utilisateurDto);
+
+  //     fetch('http://localhost:8080/creationCompte/filtres', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify(utilisateurDto)
+  //     })
+  //       .then(response => {
+  //         if (!response.ok) {
+  //           throw new Error('La réponse du réseau n\'était pas correcte');
+  //         }
+  //         return response.json();
+  //       })
+  //       .then(data => {
+  //         console.log("Données reçues :", data);
+  //         setIsSubmitted(true); // Indiquer que le formulaire a été soumis avec succès
+
+  //         console.log("Secteurs/Réseaux sélectionnés :", secteurReseauList.join(', '))
+  //         console.log("Types accompagnements sélectionnés :", accompagnementTypeList.join(', '))
+  //       })
+  //       .catch(error => {
+  //         console.error('Il y a eu un problème avec l\'opération fetch :', error);
+  //       });
+
+  //     return utilisateurDto;
+  //   });
+  // }
+
+  // Soumission du formulaire
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Formulaire soumis"); // Formulaire soumis
 
-    // Convertir les objets en tableaux de valeurs cochées
-    const accompagnementTypeList = Object.keys(accompagnements)
-      .filter(option => accompagnements[option])
-      .map(option => parseInt(option.replace('typeAccompagnement', ''))); // Convertir en numéros d'ID;
+    const utilisateurDtoToSend = {
+      idUtilisateur: idUtilisateur,
+      secteurReseauList: secteurReseau,
+      accompagnementTypeList: accompagnements,
+    };
 
-    const secteurReseauList = Object.keys(secteurReseau)
-      .filter(option => secteurReseau[option])
-      .map(option => parseInt(option.replace('secteur', ''))); // Convertir en numéros d'ID;
+    console.log('Payload envoyé:', utilisateurDtoToSend);
 
-    // Mettre à jour utilisateurDto avec les valeurs sélectionnées
-    setUtilisateurDto((prevUtilisateurDto) => {
-      const utilisateurDto = {
-        ...prevUtilisateurDto, // Utiliser l'état précédent pour garantir que l'on travaille avec la version la plus récente
-        accompagnementTypeList,
-        secteurReseauList,
-      };
-
-      console.log("UtilisateurDto à envoyer :", utilisateurDto);
-
-      fetch('http://localhost:8080/creationCompte/filtres', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(utilisateurDto)
+    fetch('http://localhost:8080/creationCompte/filtres', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(utilisateurDtoToSend),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('La réponse du réseau n\'était pas correcte');
+        }
+        return response.json();
       })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('La réponse du réseau n\'était pas correcte');
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log("Données reçues :", data);
-          setIsSubmitted(true); // Indiquer que le formulaire a été soumis avec succès
+      .then(data => {
+        console.log('Données reçues:', data);
+        setIsSubmitted(true);
+      })
+      .catch(error => console.error('Erreur lors de l\'opération fetch:', error));
+  };
 
-          console.log("Secteurs/Réseaux sélectionnés :", secteurReseauList.join(', '))
-          console.log("Types accompagnements sélectionnés :", accompagnementTypeList.join(', '))
-        })
-        .catch(error => {
-          console.error('Il y a eu un problème avec l\'opération fetch :', error);
-        });
-
-      return utilisateurDto;
-    });
-  }
 
   return (
     <Wrapper>
@@ -171,14 +294,22 @@ const Filtres = () => {
               <div className='titre'>
                 <h1 className='text'>Secteurs/Reseaux</h1>
               </div>
-              {secteurs.map((secteur, index) => (
+              {/* {secteurs.map((secteur, index) => (
                 <label key={index} className="checkbox-label">
+                  {secteur.label} */}
+              {secteurs.map((secteur) => (
+                <label key={secteur.id} className="checkbox-label">
                   {secteur.label}
                   <input
                     type="checkbox"
-                    name={`secteur${index + 1}`}
-                    checked={secteurReseau[`secteur${index + 1}`] || false}
-                    onChange={handleChange}
+                    // ====================================== Code avec envoi du type : secteur5 = true=========
+                    // name={`secteur${index + 1}`}
+                    // checked={secteurReseau[`secteur${index + 1}`] || false}
+                    // onChange={handleChange}
+                    // ================================= Code pour envoyer : { "id": 16, "label": "Secteur 16" } ====================
+                    name={`secteur${secteur.id}`}
+                    checked={secteurReseau.some((item) => item.id === secteur.id)}
+                    onChange={(event) => handleChange(event, secteur, true)}
                   />
                 </label>
               ))}
@@ -191,14 +322,20 @@ const Filtres = () => {
               </div>
               {/* <form onSubmit={handleSubmit}>  */}
               <br />
-              {typesAccompagnement.map((typeAccompagnement, index) => (
+              {/* {typesAccompagnement.map((typeAccompagnement, index) => (
                 <label key={index} className="checkbox-label colonne-droite">
+                  {typeAccompagnement.label} */}
+              {typesAccompagnement.map((typeAccompagnement) => (
+                <label key={typeAccompagnement.id} className="checkbox-label">
                   {typeAccompagnement.label}
                   <input
                     type="checkbox"
-                    name={`typeAccompagnement${index + 1}`}
-                    checked={accompagnements[`typeAccompagnement${index + 1}`] || false}
-                    onChange={handleChange}
+                    // name={`typeAccompagnement${index + 1}`}
+                    // checked={accompagnements[`typeAccompagnement${index + 1}`] || false}
+                    // onChange={handleChange}
+                    name={`typeAccompagnement${typeAccompagnement.id}`}
+                    checked={accompagnements.some((item) => item.id === typeAccompagnement.id)}
+                    onChange={(event) => handleChange(event, typeAccompagnement, false)}
                   />
                 </label>
               ))}
@@ -279,7 +416,7 @@ export default Filtres;
     onChange={handleChange}
   />
 </label><br /> */}
-{/* </form> */}
+{/* </form> */ }
 
 
 

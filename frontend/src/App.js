@@ -2,6 +2,7 @@
 import { Routes, Route } from 'react-router-dom';
 import Accueil from './pages/Accueil/accueil';
 import MonCompteParrain from './pages/MonCompteParrain/monCompteParrain';
+import MonComptePorteur from './pages/MonComptePorteur/monComptePorteur';
 import Profils from './pages/Profils/profils';
 import Matchs from './pages/Matchs/matchs';
 import Messages from './pages/Messages/messages';
@@ -18,6 +19,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Accueil/>}></Route>
         <Route path='/monCompteParrain' element={<MonCompteParrain/>}></Route>
+        <Route path='/monComptePorteur' element={<MonComptePorteur/>}></Route>
         <Route path='/profils' element={<Profils/>}></Route>
         <Route path='/matchs' element={<Matchs/>}></Route>
         <Route path='/messages' element={<Messages/>}></Route>
